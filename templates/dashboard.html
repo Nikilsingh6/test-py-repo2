@@ -31,26 +31,6 @@
             <p>Analyze transaction details and predict whether a transaction is fraud or not fraud.</p>
         </div>
 
-        <div class="stats-grid">
-            <div class="stat-card">
-                <h4>Target Labels</h4>
-                <p><strong>0</strong> = Not Fraud</p>
-                <p><strong>1</strong> = Fraud</p>
-            </div>
-
-            <div class="stat-card">
-                <h4>Model Used</h4>
-                <p>Logistic Regression</p>
-                <p>SMOTE for imbalance handling</p>
-            </div>
-
-            <div class="stat-card">
-                <h4>System Status</h4>
-                <p>Login system active</p>
-                <p>Prediction history enabled</p>
-            </div>
-        </div>
-
         {% if model_missing %}
         <div class="alert-box">
             Model files not found. Run <strong>python train_model.py</strong> first.
@@ -160,13 +140,6 @@
 
                     <button type="submit" class="btn-primary">Detect Fraud</button>
                 </form>
-
-                {% if prediction %}
-                <div class="result-box {{ 'fraud' if prediction == 'Fraud' else 'safe' }}">
-                    <h3>Prediction: {{ prediction }}</h3>
-                    <p>Fraud Probability: {{ probability }}%</p>
-                </div>
-                {% endif %}
             </section>
 
             <section class="card">

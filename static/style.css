@@ -47,6 +47,49 @@ a {
     background: #2563eb;
 }
 
+.flash-message.prediction-safe,
+.flash-message.prediction-fraud {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%);
+    min-width: 360px;
+    text-align: center;
+    z-index: 10000;
+    animation: prediction-toast-hide 6s ease forwards;
+}
+
+.flash-message.prediction-safe {
+    background: #16a34a;
+}
+
+.flash-message.prediction-fraud {
+    background: #dc2626;
+}
+
+@keyframes prediction-toast-hide {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(12px);
+    }
+
+    10% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    85% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(12px);
+        visibility: hidden;
+    }
+}
+
 /* AUTH PAGES */
 .auth-page {
     min-height: 100vh;
@@ -314,24 +357,6 @@ a {
     margin-bottom: 20px;
 }
 
-.result-box {
-    margin-top: 20px;
-    padding: 18px;
-    border-radius: 16px;
-}
-
-.result-box.safe {
-    background: #ecfdf5;
-    color: #166534;
-    border: 1px solid #86efac;
-}
-
-.result-box.fraud {
-    background: #fef2f2;
-    color: #991b1b;
-    border: 1px solid #fca5a5;
-}
-
 .table-wrapper {
     overflow-x: auto;
 }
@@ -392,5 +417,12 @@ tbody tr:hover {
 
     .page-header h1 {
         font-size: 28px;
+    }
+
+    .flash-message.prediction-safe,
+    .flash-message.prediction-fraud {
+        min-width: unset;
+        width: calc(100% - 24px);
+        bottom: 12px;
     }
 }
