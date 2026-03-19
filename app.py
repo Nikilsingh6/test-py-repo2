@@ -233,6 +233,8 @@ def dashboard():
             if not (0 <= risk_score <= 1):
                 raise ValueError("Risk Score must be between 0 and 1")
 
+            amount_balance_ratio = transaction_amount / (account_balance + 1)
+
             input_df = pd.DataFrame({
                 "Transaction_Amount": [transaction_amount],
                 "Transaction_Type": [transaction_type],
@@ -245,7 +247,8 @@ def dashboard():
                 "Transaction_Distance": [transaction_distance],
                 "Authentication_Method": [authentication_method],
                 "Risk_Score": [risk_score],
-                "Is_Weekend": [is_weekend]
+                "Is_Weekend": [is_weekend],
+                "Amount_Balance_Ratio": [amount_balance_ratio]
             })
 
             transformed_input = preprocessor.transform(input_df)
@@ -294,8 +297,16 @@ def dashboard():
             conn.commit()
             conn.close()
 
+            toast_category = "prediction-fraud" if prediction == "Fraud" else "prediction-safe"
+            flash(
+                f"Prediction: {prediction} | Fraud Probability: {probability}%",
+                toast_category
+            )
+            return redirect(url_for("dashboard"))
+
         except Exception as e:
             flash(f"Input error: {str(e)}", "danger")
+            return redirect(url_for("dashboard"))
 
     conn = get_db_connection()
     history = conn.execute("""
