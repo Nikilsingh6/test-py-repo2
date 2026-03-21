@@ -1,63 +1,126 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block title %}Register | ATM Fraud Detection{% endblock %}
+<head>
+    <meta charset="UTF-8">
+    <title>Register | ATM Fraud Detection</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e293b, #334155);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
 
-{% block content %}
-<div class="auth-page">
-    <div class="auth-wrapper">
-        <div class="auth-left">
-            <div class="brand-panel">
-                <h1>ATM Fraud Detection</h1>
-                <p>
-                    Create your account to access a secure and professional fraud
-                    detection system for ATM transactions.
-                </p>
+        .card {
+            background: white;
+            padding: 35px;
+            border-radius: 16px;
+            width: 380px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+        }
 
-                <div class="feature-item">
-                    <i class="fa-solid fa-user-shield"></i>
-                    <span>Secure Registration</span>
-                </div>
-                <div class="feature-item">
-                    <i class="fa-solid fa-chart-line"></i>
-                    <span>Fraud Analytics</span>
-                </div>
-                <div class="feature-item">
-                    <i class="fa-solid fa-lock"></i>
-                    <span>Protected Access</span>
-                </div>
-            </div>
-        </div>
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #0f172a;
+        }
 
-        <div class="auth-right">
-            <div class="auth-card">
-                <h2>Register</h2>
-                <p class="subtitle">Create your account</p>
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
 
-                <form method="POST">
-                    <div class="form-group">
-                        <label>Full Name</label>
-                        <input type="text" name="name" placeholder="Enter your full name" required>
-                    </div>
+        input:focus {
+            border-color: #2563eb;
+            outline: none;
+        }
 
-                    <div class="form-group">
-                        <label>Email Address</label>
-                        <input type="email" name="email" placeholder="Enter your email" required>
-                    </div>
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: #16a34a;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
 
-                    <div class="form-group">
-                        <label>Password</label>
-                        <input type="password" name="password" placeholder="Enter your password" required>
-                    </div>
+        button:hover {
+            background: #15803d;
+        }
 
-                    <button type="submit" class="btn-primary">Register</button>
-                </form>
+        .link {
+            text-align: center;
+            margin-top: 12px;
+        }
 
-                <p class="bottom-link">
-                    Already have an account?
-                    <a href="{{ url_for('login') }}">Sign In</a>
-                </p>
-            </div>
+        .link a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .flash {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .info {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <h2>Register</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endwith %}
+
+        <form method="POST">
+            <input type="text" name="name" placeholder="Full Name" required>
+            <input type="email" name="email" placeholder="Email Address" required>
+            <input type="password" name="password" placeholder="Password (min 6 characters)" required>
+            <button type="submit">Register</button>
+        </form>
+
+        <div class="link">
+            Already have an account? <a href="{{ url_for('login') }}">Login</a>
         </div>
     </div>
-</div>
-{% endblock %}
+
+</body>
+
+</html>

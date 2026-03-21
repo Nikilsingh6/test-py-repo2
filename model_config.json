@@ -1,0 +1,27 @@
+{
+    "risk_score_scale": "0_to_1",
+    "high_risk_cutoff": 0.7,
+    "prediction_threshold": 0.5,
+    "saved_model_name": "Random Forest",
+    "logistic_accuracy_percent": 74.86,
+    "random_forest_accuracy_percent": 83.18,
+    "best_accuracy_percent": 83.18,
+    "feature_columns": [
+        "Transaction_Amount",
+        "Transaction_Type",
+        "Account_Balance",
+        "Location",
+        "Previous_Fraudulent_Activity",
+        "Daily_Transaction_Count",
+        "Card_Type",
+        "Transaction_Distance",
+        "Authentication_Method",
+        "Risk_Score",
+        "Amount_Balance_Ratio",
+        "High_Amount",
+        "Low_Balance",
+        "High_Risk",
+        "Amount_Log",
+        "Distance_Risk"
+    ]
+}
