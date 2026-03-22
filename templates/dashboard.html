@@ -5,230 +5,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ATM Fraud Detection Dashboard</title>
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, #0f172a, #1e293b, #334155);
-            min-height: 100vh;
-            color: #1e293b;
-        }
-
-        .container {
-            width: 95%;
-            max-width: 1200px;
-            margin: 30px auto;
-        }
-
-        .topbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            padding: 18px;
-            border-radius: 16px;
-            margin-bottom: 20px;
-        }
-
-        .logout-btn {
-            text-decoration: none;
-            background: #ef4444;
-            color: white;
-            padding: 8px 14px;
-            border-radius: 8px;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
-        }
-
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .card h2 {
-            margin-bottom: 10px;
-        }
-
-        .helper {
-            font-size: 13px;
-            color: #555;
-            margin-bottom: 10px;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        label {
-            font-size: 13px;
-            margin-bottom: 4px;
-        }
-
-        input,
-        select {
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-        }
-
-        .btn {
-            margin-top: 15px;
-            padding: 12px;
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            width: 100%;
-            cursor: pointer;
-        }
-
-        .result {
-            margin-top: 15px;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .safe {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .fraud {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .mini-card {
-            background: linear-gradient(135deg, #2563eb, #1e40af);
-            color: white;
-            padding: 15px;
-            border-radius: 12px;
-        }
-
-        .history {
-            margin-top: 20px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-
-        th,
-        td {
-            padding: 8px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background: #f1f5f9;
-        }
-
-        .badge-safe {
-            color: green;
-            font-weight: bold;
-        }
-
-        .badge-fraud {
-            color: red;
-            font-weight: bold;
-        }
-
-        .flash {
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 8px;
-        }
-
-        .danger {
-            background: #fee2e2;
-        }
-
-        .success {
-            background: #dcfce7;
-        }
-
-        .warning {
-            background: #fef3c7;
-        }
-
-        .prediction-safe {
-            background: #dcfce7;
-        }
-
-        .prediction-fraud {
-            background: #fee2e2;
-        }
-
-        @media (max-width: 800px) {
-            .grid {
-                grid-template-columns: 1fr;
-            }
-
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
-<body>
+<body class="dashboard-v2-body">
+    <div class="dashboard-bg-overlay" aria-hidden="true"></div>
 
-    <div class="container">
-
-        <div class="topbar">
-            <div>
-                <h2>ATM Fraud Detection</h2>
-                <p>Welcome {{ user["name"] }}</p>
+    <div class="dashboard-shell">
+        <header class="dashboard-v2-header glass-panel">
+            <div class="header-brand-block">
+                <p class="eyebrow">Fraud Monitoring Workspace</p>
+                <h1>ATM Fraud Detection Dashboard</h1>
+                <p class="header-welcome">Welcome back, {{ user["name"] }}</p>
             </div>
-            <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
-        </div>
+            <div class="header-actions">
+                <a href="{{ url_for('logout') }}" class="logout-btn-v2">Logout</a>
+            </div>
+        </header>
 
-        <!-- Flash messages -->
         {% with messages = get_flashed_messages(with_categories=true) %}
-        {% for category, message in messages %}
-        <div class="flash {{ category }}">{{ message }}</div>
-        {% endfor %}
+        {% if messages %}
+        <section class="flash-stack">
+            {% for category, message in messages %}
+            <div class="flash-v2 {{ category }}">{{ message }}</div>
+            {% endfor %}
+        </section>
+        {% endif %}
         {% endwith %}
 
-        <div class="grid">
+        {% if model_missing %}
+        <section class="model-warning glass-panel">
+            <h3>Model Files Not Found</h3>
+            <p>Prediction is temporarily unavailable because model artifacts are missing. Check model setup and refresh the dashboard.</p>
+        </section>
+        {% endif %}
 
-            <!-- FORM -->
-            <div class="card">
-                <h2>Transaction Form</h2>
-                <p class="helper">Enter transaction details</p>
+        <main class="dashboard-main-column">
+            <section class="glass-panel transaction-panel form-panel-wide">
+                <div class="panel-head">
+                    <h2>Transaction Form</h2>
+                    <p>Enter transaction details to run fraud prediction.</p>
+                </div>
 
                 <form method="POST">
-                    <div class="form-grid">
+                    <div class="dashboard-form-grid">
 
-                        <div class="form-group">
+                        <div class="dashboard-field-group">
                             <label>Transaction Amount</label>
-                            <input type="number" name="transaction_amount" required>
+                            <input type="number" name="transaction_amount" placeholder="e.g. 2500" required>
                         </div>
 
-                        <div class="form-group">
+                        <div class="dashboard-field-group">
                             <label>Transaction Type</label>
                             <select name="transaction_type" required>
                                 <option value="">Select</option>
@@ -238,12 +65,12 @@
                             </select>
                         </div>
 
-                        <div class="form-group">
+                        <div class="dashboard-field-group">
                             <label>Account Balance (Demo)</label>
-                            <input type="number" name="account_balance" required>
+                            <input type="number" name="account_balance" placeholder="e.g. 15000" required>
                         </div>
 
-                        <div class="form-group">
+                        <div class="dashboard-field-group">
                             <label>Location</label>
                             <select name="location" required>
                                 <option value="">Select</option>
@@ -253,7 +80,7 @@
                             </select>
                         </div>
 
-                        <div class="form-group">
+                        <div class="dashboard-field-group">
                             <label>Previous Fraud</label>
                             <select name="previous_fraudulent_activity">
                                 <option value="0">No</option>
@@ -261,12 +88,12 @@
                             </select>
                         </div>
 
-                        <div class="form-group">
+                        <div class="dashboard-field-group">
                             <label>Daily Count</label>
-                            <input type="number" name="daily_transaction_count">
+                            <input type="number" name="daily_transaction_count" placeholder="e.g. 3">
                         </div>
 
-                        <div class="form-group">
+                        <div class="dashboard-field-group">
                             <label>Card Type</label>
                             <select name="card_type">
                                 {% for i in card_types %}
@@ -275,12 +102,12 @@
                             </select>
                         </div>
 
-                        <div class="form-group">
+                        <div class="dashboard-field-group">
                             <label>Distance</label>
-                            <input type="number" name="transaction_distance">
+                            <input type="number" name="transaction_distance" step="0.1" placeholder="e.g. 12.5">
                         </div>
 
-                        <div class="form-group">
+                        <div class="dashboard-field-group">
                             <label>Auth Method</label>
                             <select name="authentication_method">
                                 {% for i in auth_methods %}
@@ -289,68 +116,66 @@
                             </select>
                         </div>
 
-                        <div class="form-group">
+                        <div class="dashboard-field-group">
                             <label>Risk Score (0 - {{ risk_score_max }})</label>
                             <input type="number" step="0.01" name="risk_score"
-                                placeholder="{{ risk_score_placeholder }}" required>
+                                placeholder="e.g. 0.42" required>
                         </div>
 
                     </div>
 
-                    <button class="btn">Predict</button>
+                    <button class="predict-btn" type="submit">Predict Transaction Risk</button>
                 </form>
 
                 {% if prediction %}
-                <div class="result {% if prediction == 'Fraud' %}fraud{% else %}safe{% endif %}">
+                <div class="result-v2 {% if prediction == 'Fraud' %}fraud{% else %}safe{% endif %}">
                     <h3>{{ prediction }}</h3>
-                    <p>{{ probability }} %</p>
+                    <p>Fraud Probability: {{ probability }} %</p>
                 </div>
                 {% endif %}
+            </section>
+        </main>
+
+        <section class="glass-panel history-panel history-panel-large">
+            <div class="panel-head">
+                <h2>Recent Transaction History</h2>
+                <p>Latest 10 predictions for your account.</p>
             </div>
-
-            <!-- SIDE INFO -->
-            <div class="mini-card">
-                <h3>About</h3>
-                <p>This system detects fraudulent transactions using machine learning.</p>
-            </div>
-
-        </div>
-
-        <!-- HISTORY -->
-        <div class="card history">
-            <h2>History</h2>
 
             {% if history %}
-            <table>
-                <tr>
-                    <th>Amount</th>
-                    <th>Type</th>
-                    <th>Location</th>
-                    <th>Result</th>
-                </tr>
-
-                {% for h in history %}
-                <tr>
-                    <td>{{ h["transaction_amount"] }}</td>
-                    <td>{{ h["transaction_type"] }}</td>
-                    <td>{{ h["location"] }}</td>
-                    <td>
-                        {% if h["prediction_label"] == "Fraud" %}
-                        <span class="badge-fraud">Fraud</span>
-                        {% else %}
-                        <span class="badge-safe">Safe</span>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </table>
+            <div class="history-table-wrap">
+                <table class="history-table-v2">
+                    <thead>
+                        <tr>
+                            <th>Amount</th>
+                            <th>Type</th>
+                            <th>Location</th>
+                            <th>Result</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for h in history %}
+                        <tr>
+                            <td>{{ h["transaction_amount"] }}</td>
+                            <td>{{ h["transaction_type"] }}</td>
+                            <td>{{ h["location"] }}</td>
+                            <td>
+                                {% if h["prediction_label"] == "Fraud" %}
+                                <span class="status-badge fraud">Fraud</span>
+                                {% else %}
+                                <span class="status-badge safe">Safe</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
             {% else %}
-            <p>No history</p>
+            <p class="empty-history">No history yet. Submitted predictions will appear here.</p>
             {% endif %}
-        </div>
-
+        </section>
     </div>
-
 </body>
 
 </html>
